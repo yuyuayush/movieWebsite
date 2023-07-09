@@ -1,0 +1,5 @@
+export {default as Profile} from './Profile/Profile'
+export {default as Navbar} from './Navbar/Navbar.jsx'
+export {default as Movie} from './Movie/Movie.jsx'
+export {default as MovieInformation} from './MovieInformation/MovieInformation'
+export {default as Actors} from './Actors/Actors'
