@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route,Routes } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
-import { Actors,Profile,Navbar,Movie,MovieInformation } from './'
+import { Actors,Profile,Navbar,Movie,MovieInformation, Movies } from './'
 import useStyles from './style'
 const App = () => {
 
@@ -18,7 +18,7 @@ const classes = useStyles();
 
 	<Route exact path="/actor/:id" element={ <Actors/> }  />
 
-	<Route exact path='/' element={ Movie }  />
+	<Route exact path='/' element={ <Movies/> }  />
 
 	<Route exact path='/profile/:id' element={ <Profile/> }  />
 	
