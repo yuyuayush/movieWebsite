@@ -32,10 +32,13 @@ export const tmdbApi = createApi({
 		  getGenre:builder.query({
 			query:()=> `genre/movie/list?api_key=249e38a3d0eb975e0dc3df5540591eb3`
 		  }),
+		  getMovie:builder.query({
+			query:(id)=>`/movie/${id}?append_to_response=videos,credits&api_key=249e38a3d0eb975e0dc3df5540591eb3`
+		  })
 	}),
 
 	//basequery is important base wil fetchBaseQuery
 	// it carry baseUrl : ''   
 	//this telling string 
 });
-export const {useGetMoviesQuery,useGetGenreQuery } = tmdbApi;
+export const {useGetMoviesQuery,useGetGenreQuery,useGetMovieQuery } = tmdbApi;
