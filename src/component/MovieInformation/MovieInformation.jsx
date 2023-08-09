@@ -1,16 +1,33 @@
 import React from 'react'
 import {useParams}from 'react-router-dom'
 import useStyles from './styles';
-import {Box, Button, ButtonGroup, CircularProgress, Grid, Link, Rating, Typography, collapseClasses} from '@mui/material';
+import {Box, Button, ButtonGroup, CircularProgress, Grid, Link, Modal, Rating, Typography, collapseClasses} from '@mui/material';
 import { Movie as MovieIcon, Theaters, Language, PlusOne, Favorite, FavoriteBorderOutlined, Remove, ArrowBack } from '@mui/icons-material';
-
-import { useGetMovieQuery } from '../../services/TMDB';
+import axios from 'axios'
+import { useDispatch,useSelector } from 'react-redux';
+import { useGetMovieQuery, useGetRecommendationQuery } from '../../services/TMDB';
 import genreIcons from '../../assets/genres'
+import { useState } from 'react';
+import {selectGenreOrCategory} from '../../services/TMDB'
+import { useGetGenreQuery } from '../../services/TMDB';
+import {MovieList} from '../index'
 const MovieInformation = () => {
 	const classes =useStyles();
 	const {id} = useParams();
+	const [setOpen, setSetOpen] = useState(false)
+	const dispatch =useDispatch();
+	const {data:recommendations,isFetching:isRecommendations}=useGetRecommendationQuery({list:'/recommendations',id});
 	const {data,error,isFetching} = useGetMovieQuery(id);
+	const [isMovieFavorited, setIsMovieFavorited] = useState(true)
+	const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(true)
+	const addToFavourites = async()=>{
+		setIsMovieFavorited((prev)=>!prev);
+	}
+	const addToWatchList = async()=>{
+		setIsMovieWatchlisted((prev) => !prev);
+	}
 	
+
 	if(isFetching){
 		return(
 			<Box display="flex" justifyContent="center" >
@@ -54,8 +71,8 @@ const MovieInformation = () => {
 		<Typography gutterBottom variant="h6" align="center">{data?.runtime}min</Typography>
 		</Grid>
 
-		<Grid item >
-			{data?.genre?.map((genre)=>(
+		<Grid item className={classes.genresContainer}  >
+			{data?.genres?.map((genre)=>(
 				<Link className={classes.links} key={genre.name} to="/">
               <img alt="GENRE NAME" src={genreIcons[genre.name.toLowerCase()]} className={classes.genreImage} height={30} />
               <Typography color="textPrimary" variant="subtitle1">{genre?.name}</Typography>
@@ -90,17 +107,56 @@ const MovieInformation = () => {
 					<ButtonGroup size="small" variant="outlined">
                 <Button target="_blank" rel="noopener noreferrer" href={data?.homepage} endIcon={<Language />}>Website</Button>
                 <Button target="_blank" rel="noopener noreferrer" href={`https://www.imdb.com/title/${data?.imdb_id}`} endIcon={<MovieIcon />}>IMDB</Button>
-                {/* <Button onClick={() => setOpen(true)} href="#" endIcon={<Theaters />}>Trailer</Button> */}
+                <Button onClick={() => setOpen(true)} href="#" endIcon={<Theaters />}>Trailer</Button>
               </ButtonGroup>
 					</Grid>
-				</div>
+				<Grid item xs={12} sm={6} className={classes.buttonContainer}>
+					<ButtonGroup size='small' variant="outlined">
+						<Button onClick={addToFavourites}
+						endIcon={isMovieFavorited ? <FavoriteBorderOutlined/> : <Favorite/>}>
+					{isMovieFavorited?'Unfavourite':'Favourite'}
+						</Button>
+						<Button onClick={addToWatchList}
+						endIcon={isMovieWatchlisted? <Remove/> : <PlusOne/>}>
+					 	Watchlist
+						</Button>
+						<Button 
+						sx={{borderColor:'primary.main'}}
+						endIcon={<ArrowBack/>}>
+					<Typography variant="subtitle2" component={Link} to="/" color="inherit" sx={{ textDecoration: 'none' }}>
+                    Back
+                  </Typography>	
+						</Button>
+					</ButtonGroup>
+				</Grid>
+		</div>
 		</Grid>		
-
-
-
-
 		</Grid>
-
+		<Box marginTop="5rem" width="100%">
+			<Typography variant='h3' gutterBottom align='center'>
+				You might also like
+			</Typography>
+			{
+				recommendations ?
+				<MovieList movies={recommendations} numberOfMovies={12}/>
+				: <Box> Sorry ,nothing was found.</Box>}
+			</Box>
+				<Modal closeAfterTransition
+				className={classes.modal}
+				onClose={()=>setOpen(false)}
+				>	
+				{data?.videos?.results?.length > 0 && (
+					<iframe
+					autoPlay
+					className={classes.video}
+					frameBorder="0"
+					title="Trailer"
+					src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+					allow="autoPlay"/>
+				)}
+				</Modal>
+			
+		
 	</Grid>
   )
 }
