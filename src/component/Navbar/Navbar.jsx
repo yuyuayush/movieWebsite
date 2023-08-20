@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AppBar,IconButton,Toolbar,Drawer,Button,Avatar, useMediaQuery } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { Menu,AccountCircle,Brightness4,Brightness7  } from '@mui/icons-material'
 import useStyles from './styles'
 import {useTheme} from '@mui/material/styles';
 import {Sidebar,Search} from '../../component';
+import { ColorModeContext } from '../../app/utils/ToggleColorMode'
 const Navbar = () => {
 	const [mobileOpen, setMobileOpen] = useState(false)
 	const classes = useStyles();
 	const theme =useTheme();
 	const isAuthenticated = true; 
 	const isMobile =useMediaQuery('(max-width:600px)')
+	const colorMode = useContext(ColorModeContext)
   return (
 	<>
 	 <AppBar position='fixed'>
@@ -24,7 +26,7 @@ const Navbar = () => {
 				<Menu/>
 			</IconButton>
 		)}
-		<IconButton color='inherit' sx={{ml:1}} onClick={()=>{}} >
+		<IconButton color='inherit' sx={{ml:1}} onClick={colorMode.toggleColorMode} >
 				{theme.palette.mode=== 'dark' ? <Brightness7/> : <Brightness4/>}
 		</IconButton>
 		

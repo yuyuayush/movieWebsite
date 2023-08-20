@@ -35,9 +35,15 @@ export const tmdbApi = createApi({
 		  getMovie:builder.query({
 			query:(id)=>`/movie/${id}?append_to_response=videos,credits&api_key=249e38a3d0eb975e0dc3df5540591eb3`
 		  }),
-		  getRecommendation:builder.query({
-			query:(movie_id,list)=>
+		  getRecommendations:builder.query({
+			query:({movie_id,list})=>
 			`/movie/${movie_id}/${list}?api_key=249e38a3d0eb975e0dc3df5540591eb3`
+		  }),
+		  getActor:builder.query({
+			query:(id)=> `person/${id}?api_key=249e38a3d0eb975e0dc3df5540591eb3`
+		  }),
+		  getMoviesByActorId:builder.query({
+			query:({id,page})=>`/discover/movie?with_cast=${id}&page=${page}&api_key=249e38a3d0eb975e0dc3df5540591eb3`
 		  })
 	}),
 
@@ -45,4 +51,4 @@ export const tmdbApi = createApi({
 	// it carry baseUrl : ''   
 	//this telling string 
 });
-export const {useGetMoviesQuery,useGetGenreQuery,useGetMovieQuery,useGetRecommendationQuery } = tmdbApi;
+export const {useGetMoviesQuery,useGetGenreQuery,useGetMovieQuery,useGetRecommendationsQuery,useGetActorQuery,useGetMoviesByActorIdQuery } = tmdbApi;

@@ -5,6 +5,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import { useGetMoviesQuery } from '../../services/TMDB'
 import {MovieList} from '..'
 import { selectGenreOrCategory } from '../../app/feature/currentGenreOrCategory';
+import Pago from '../Pago/Pago'
 
 const Movies = () => {
 	const [page, setPage] = useState(1);
@@ -34,6 +35,7 @@ const Movies = () => {
   return (
 	<div>
 	  <MovieList movies={data}/>
+	  <Pago currentPage={page} setPage={setPage} totalPages={data?.total_page}/>
 	</div>
   )
 }

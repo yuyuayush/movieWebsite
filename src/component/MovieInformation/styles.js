@@ -7,11 +7,13 @@ export default makeStyles((theme) => ({
     margin: '10px 0 !important',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
+      justifyContent: 'center',
       flexWrap: 'wrap',
     },
   },
   container:{
-    marginTop:'20px'
+    marginTop:'20px',
+    justifyContent: "center"
   },
   poster: {
     borderRadius: '20px',

@@ -3,6 +3,7 @@ import { BrowserRouter, Route,Routes } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
 import { Actors,Profile,Navbar,Movie,MovieInformation, Movies } from './'
 import useStyles from './style'
+import "../index.css"
 const App = () => {
 
 const classes = useStyles();

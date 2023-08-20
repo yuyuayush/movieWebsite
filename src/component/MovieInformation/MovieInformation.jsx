@@ -1,25 +1,29 @@
 import React from 'react'
-import {useParams}from 'react-router-dom'
+import {useParams,Link}from 'react-router-dom'
 import useStyles from './styles';
-import {Box, Button, ButtonGroup, CircularProgress, Grid, Link, Modal, Rating, Typography, collapseClasses} from '@mui/material';
+
+import {Box, Button, ButtonGroup, CircularProgress, Grid, Modal, Rating, Typography, collapseClasses} from '@mui/material';
 import { Movie as MovieIcon, Theaters, Language, PlusOne, Favorite, FavoriteBorderOutlined, Remove, ArrowBack } from '@mui/icons-material';
 import axios from 'axios'
 import { useDispatch,useSelector } from 'react-redux';
-import { useGetMovieQuery, useGetRecommendationQuery } from '../../services/TMDB';
+import { useGetMovieQuery, useGetRecommendationsQuery } from '../../services/TMDB';
 import genreIcons from '../../assets/genres'
 import { useState } from 'react';
 import {selectGenreOrCategory} from '../../services/TMDB'
 import { useGetGenreQuery } from '../../services/TMDB';
 import {MovieList} from '../index'
+import Pago from '../Pago/Pago';
 const MovieInformation = () => {
 	const classes =useStyles();
 	const {id} = useParams();
 	const [setOpen, setSetOpen] = useState(false)
 	const dispatch =useDispatch();
-	const {data:recommendations,isFetching:isRecommendations}=useGetRecommendationQuery({list:'/recommendations',id});
+	const { data: recommendations } = useGetRecommendationsQuery({ list: '/recommendations', movie_id:id });
 	const {data,error,isFetching} = useGetMovieQuery(id);
 	const [isMovieFavorited, setIsMovieFavorited] = useState(true)
+	console.log(recommendations);
 	const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(true)
+	const [page, setPage] = useState(1)
 	const addToFavourites = async()=>{
 		setIsMovieFavorited((prev)=>!prev);
 	}
@@ -43,15 +47,18 @@ const MovieInformation = () => {
 		);
 	  }
   return (
-	// container use for flex;
+	<>
+	
 	<Grid  container className={classes.container} >
-		<Grid item sm={12} lg={4} md={4} align="center">
+		
+		<Grid item  sm={12} lg={4} md={4} align="center">
 		<img 
 		src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
 		alt={data?.title}
 		className={classes.poster}
 		 />	
 		</Grid>
+		
 		<Grid item container direction ="column" lg={7}>
 		<Typography variant="h3" align="center" gutterBottom >
 			{data?.title} ({data.release_date.split('-')[0]})
@@ -86,7 +93,7 @@ const MovieInformation = () => {
 		<Grid item container spacing={2}>
           {data && data?.credits?.cast?.map((character, i) => (
             character.profile_path && (
-            <Grid key={i} item xs={4} md={2} component={Link} to={`/actors/${character.id}`} style={{ textDecoration: 'none' }}>
+            <Grid key={i} item xs={4} md={2} component={Link} to={`/actor/${character.id}`}  style={{ textDecoration: 'none' }}>
               <img
                 className={classes.castImage}
                 src={`https://image.tmdb.org/t/p/w500/${character.profile_path}`}
@@ -158,6 +165,8 @@ const MovieInformation = () => {
 			
 		
 	</Grid>
+		<Pago currentPage={page} setPage={setPage} totalPages={data?.total_pages}/>
+	</>
   )
 }
 
